@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { graphqlRequest } from "@/app/lib/graphql-client";
 import toast from "react-hot-toast";
 
@@ -44,55 +44,92 @@ const addressList: string[] = [
   "TEBUEL",
 ];
 
-export default function NewPatient() {
+export default function EditPatientPage() {
+  const { id } = useParams();
   const router = useRouter();
   const queryClient = useQueryClient();
-
-  // Preselect today's date in YYYY-MM-DD format
-  const today = new Date();
-  const yyyy = today.getFullYear();
-  const mm = String(today.getMonth() + 1).padStart(2, "0");
-  const dd = String(today.getDate()).padStart(2, "0");
-  const todayString = `${yyyy}-${mm}-${dd}`;
 
   const [form, setForm] = useState<Patient>({
     fullname: "",
     age: "",
     address: "",
-    dateSigned: todayString,
+    dateSigned: "",
     diagnosis: "",
-    remarks: "FOR FINANCIAL ASSISTANCE / MEDICAL ASSISTANCE",
+    remarks: "",
   });
 
-  // ================= MUTATION =================
-  const createMutation = useMutation({
-    mutationFn: (input: Patient) =>
+  // ================= FETCH SINGLE =================
+  const { data, isLoading } = useQuery({
+    queryKey: ["patient", id],
+    queryFn: () =>
       graphqlRequest(
         `
-      mutation CreatePatient($input:PatientInput!){
-        createPatient(input:$input){
-          _id
+        query Patient($id:ID!){
+          patient(id:$id){
+            _id
           fullname
           age
           address
           dateSigned
           diagnosis
           remarks
+          }
         }
-      }
       `,
-        { input },
+        { id },
       ),
+    enabled: !!id,
+  });
+
+  // PREFILL FORM
+  useEffect(() => {
+    if (data?.patient) {
+      setForm({
+        fullname: data.patient.fullname,
+        age: data.patient.age,
+        address: data.patient.address,
+        dateSigned: data.patient.dateSigned,
+        diagnosis: data.patient.diagnosis,
+        remarks: data.patient.remarks,
+      });
+    }
+  }, [data]);
+
+  // ================= UPDATE =================
+  const updateMutation = useMutation({
+    mutationFn: (input: Patient) =>
+      graphqlRequest(
+        `
+        mutation UpdatePatient($id:ID!, $input:PatientInput!){
+          updatePatient(id:$id, input:$input){
+            _id
+          }
+        }
+      `,
+        { id, input },
+      ),
+
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries({ queryKey: ["patient"] });
+    //   queryClient.invalidateQueries({ queryKey: ["patient", id] });
+    //   router.push("/dashboard");
+    // },
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["patients"] });
-      toast.success("New Patient Added Successfully", {
+      queryClient.invalidateQueries({ queryKey: ["patient", id] });
+
+      toast.success("Updated Successfully", {
         duration: 3000,
         style: {
           padding: "4px",
           fontSize: "16px",
         },
       });
+      queryClient.setQueryData(["patient", id], (old: any) => ({
+        ...old,
+        patient: { ...old.patient, ...form },
+      }));
       router.push("/dashboard");
     },
 
@@ -104,7 +141,7 @@ export default function NewPatient() {
       const message =
         error?.response?.errors?.[0]?.message ||
         error.message ||
-        "Error creating patient";
+        "Error updating patient";
       toast.error(message, {
         duration: 3000,
         style: {
@@ -134,10 +171,8 @@ export default function NewPatient() {
     }));
   };
 
-  // ================= HANDLE SUBMIT =================
   const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
-
     // Convert dateSigned to "February 27, 2026" format
     const formattedDate = new Date(form.dateSigned).toLocaleDateString(
       "en-US",
@@ -147,14 +182,14 @@ export default function NewPatient() {
         day: "numeric",
       },
     );
-
-    // Send mutation
-    createMutation.mutate({ ...form, dateSigned: formattedDate });
+    updateMutation.mutate({ ...form, dateSigned: formattedDate });
   };
+
+  if (isLoading) return <div className="p-6">Loading...</div>;
 
   return (
     <div className="p-6 max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Create Patient</h1>
+      <h1 className="text-2xl font-bold mb-6">Edit Patient</h1>
 
       <form
         onSubmit={handleSubmit}
@@ -206,10 +241,10 @@ export default function NewPatient() {
 
         {/* DATE SIGNED */}
         <div>
-          <label className="text-sm text-gray-600">Date Signed</label>
+          <label className="text-sm text-gray-600">Registration Date</label>
           <input
             name="dateSigned"
-            type="date"
+            type="text"
             value={form.dateSigned}
             onChange={handleChange}
             required
@@ -245,10 +280,10 @@ export default function NewPatient() {
         <div className="flex gap-3 pt-2">
           <button
             type="submit"
-            disabled={createMutation.isPending}
+            disabled={updateMutation.isPending}
             className="px-4 py-2 rounded-lg bg-black text-white hover:opacity-90 disabled:opacity-50"
           >
-            {createMutation.isPending ? "Saving..." : "Create"}
+            {updateMutation.isPending ? "Saving..." : "Update"}
           </button>
 
           <button

@@ -6,7 +6,8 @@ import { fetchPatients } from "@/app/lib/queries/patient";
 import { graphqlRequest } from "@/app/lib/graphql-client";
 import Link from "next/link";
 import { useDebounce } from "@/app/hooks/useDebounce";
-import { formatDate } from "../utils/formatDate";
+// import { formatDate } from "../utils/formatDate";
+import toast from "react-hot-toast";
 
 export default function PatientsPage() {
   const queryClient = useQueryClient();
@@ -45,13 +46,15 @@ export default function PatientsPage() {
       mutation DeletePatient($id:ID!){
         deletePatient(id:$id)
       }
-    `,
+      `,
         { id },
       ),
 
     // ⭐ OPTIMISTIC UPDATE
     onMutate: async (id: string) => {
-      await queryClient.cancelQueries({ queryKey: ["patients"] });
+      await queryClient.cancelQueries({
+        queryKey: ["patients", page, search],
+      });
 
       const previous = queryClient.getQueryData<any>([
         "patients",
@@ -73,14 +76,30 @@ export default function PatientsPage() {
       return { previous };
     },
 
-    // ⭐ ROLLBACK IF ERROR
-    onError: (_err, _id, context) => {
+    // ⭐ ROLLBACK
+    onError: (error: any, _id, context) => {
       if (context?.previous) {
         queryClient.setQueryData(["patients", page, search], context.previous);
       }
-    },
 
-    // ⭐ FINAL REFRESH
+      const message =
+        error?.response?.errors?.[0]?.message ||
+        error.message ||
+        "Delete failed";
+
+      toast.error(message, {
+        duration: 3000,
+        style: { padding: "4px", fontSize: "16px" },
+      });
+    },
+    // ⭐ SUCCESS
+    onSuccess: () => {
+      toast.success("Patient deleted successfully", {
+        duration: 3000,
+        style: { padding: "4px", fontSize: "16px" },
+      });
+    },
+    // ⭐ SUCCESS + REFRESH
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["patients"] });
     },
@@ -118,7 +137,7 @@ export default function PatientsPage() {
               <th className="p-4">Age</th>
               <th className="p-4">Address</th>
               <th className="p-4 w-32">Diagnosis</th>
-              <th className="p-4">Date Signed</th>
+              {/* <th className="p-4">Date Signed</th> */}
               <th className="p-4 w-32">Actions</th>
             </tr>
           </thead>
@@ -149,9 +168,9 @@ export default function PatientsPage() {
                 <td className="p-4">{patient.age}</td>
                 <td className="p-4">{patient.address}</td>
                 <td className="p-4 w-32">{patient.diagnosis}</td>
-                <td className="p-4">{patient.dateSigned}</td>
-               {/* <td className="p-4">{formatDate(patient.dateSigned)}</td> */}
-               {/* <td className="p-4">
+                {/* <td className="p-4">{patient.dateSigned}</td> */}
+                {/* <td className="p-4">{formatDate(patient.dateSigned)}</td> */}
+                {/* <td className="p-4">
   {
   patient.dateSigned
     ? new Date(patient.dateSigned).toLocaleDateString("en-US", {
