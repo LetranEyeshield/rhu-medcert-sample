@@ -1,7 +1,7 @@
 // new code with text index for better search performance
 import mongoose, { Schema, model, models } from "mongoose";
 
-const PatientSchema = new Schema(
+const MedcertSchema = new Schema(
   {
     fullname: { type: String, required: true },
     age: { type: Number, required: true },
@@ -13,8 +13,6 @@ const PatientSchema = new Schema(
   { timestamps: true },
 );
 
-// ⭐ SEARCH INDEX
-PatientSchema.index({ fullname: "text" });
 
-const Patient = models.Patient || model("Patient", PatientSchema);
-export default Patient;
+const Medcert = models.Medcert || model("Medcert", MedcertSchema);
+export default Medcert;

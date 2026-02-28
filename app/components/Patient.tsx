@@ -190,6 +190,13 @@ export default function PatientsPage() {
                     Edit
                   </button> */}
 
+                   <Link
+                    href={`/dashboard/medcert/${patient._id}`}
+                    className="text-sm px-3 py-1 rounded bg-green-500 text-white"
+                  >
+                    Issue Med Cert
+                  </Link>
+
                   <Link
                     href={`/dashboard/patients/${patient._id}`}
                     className="text-sm px-3 py-1 rounded bg-blue-500 text-white"

@@ -1,4 +1,5 @@
 import { patientResolvers } from "./patient";
+import { medcertResolvers } from "./medcert";
 
 export const resolvers = {
   Query: {
@@ -6,5 +7,6 @@ export const resolvers = {
   },
   Mutation: {
     ...patientResolvers.Mutation,
+    ...medcertResolvers.Mutation,
   },
 };
