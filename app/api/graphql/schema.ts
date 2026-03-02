@@ -14,7 +14,7 @@ export const typeDefs = /* GraphQL */ `
     type Medcert {
     _id: ID!
     fullname: String!
-    age: Int!
+    age: String!
     address: String!
     dateSigned: String!
     diagnosis: String!
@@ -40,7 +40,7 @@ export const typeDefs = /* GraphQL */ `
 
     input MedcertInput {
     fullname: String!
-    age: Int!
+    age: String!
     address: String!
     dateSigned: String!
     diagnosis: String!

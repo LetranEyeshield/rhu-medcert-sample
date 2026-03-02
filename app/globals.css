@@ -11,18 +11,30 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.wrapper{
+.wrapper {
   width: 100%;
   max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.certificate {
-  width: 794px;        /* A4 width */
-  min-height: 1123px;  /* A4 height */
-  margin: auto;
+/* A4 SIZE */
+/* .certificate {
+  width: 794px;       
+  min-height: 1123px;
   padding: 40px;
   background: white;
-  font-family: serif;
+  font-family: "Times New Roman", Times, serif;
+  border: 1px solid red;
+} */
+
+/* LETTER SIZE */
+.certificate {
+  width: 816px;        
+  min-height: 1056px;
+  padding: 40px;
+  background: white;
+  font-family: "Times New Roman", Times, serif;
 }
 
 @media print {
@@ -31,6 +43,58 @@ body {
   }
 }
 
-p{
+.header-p p {
+  line-height: 20px;
+  font-size: 17.33px;
+}
+
+.certificate h2 {
+  font-size: 21.33px;
+  font-weight: bold;
+  letter-spacing: 6px;
+  text-align: center;
+  text-decoration: underline;
+  margin-top: 45px;
+  margin-bottom: 25px;
+}
+
+.certificate hr {
+  height: 2px;
+  background: black;
+  width: 100%;
+  margin-bottom: 3px;
+}
+
+.certificate .age-input {
+  width: 35px;
+}
+
+.address-input {
+  height: 25px;
+}
+
+.form-diagnosis::-webkit-scrollbar {
+  display: none;
+}
+
+.form-diagnosis {
+  -ms-overflow-style: none; /* IE & Edge */
+  scrollbar-width: none; /* Firefox */
+  line-height: 40px;
+}
+
+.form-dateSigned {
+  margin-top: 1px;
+}
+
+.date-signed-span {
+  margin-left: -10px;
+}
+
+.doc-div p{
+  margin-top: -8px;
+}
+
+p {
   font-size: 16px;
 }

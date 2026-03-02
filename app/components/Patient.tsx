@@ -205,7 +205,7 @@ export default function PatientsPage() {
                   </Link>
 
                   <button
-                    className="text-sm px-3 py-1 rounded bg-red-500 text-white"
+                    className="text-sm px-3 py-1 rounded bg-red-500 text-white cursor-pointer"
                     onClick={() => handleDelete(patient)}
                   >
                     Delete
