@@ -23,14 +23,6 @@ export default function MedcertPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  //for printing stuff
-  const ref = useRef(null);
-
-  const handlePrint = useReactToPrint({
-    // content: () => ref.current,
-    contentRef: ref,
-  });
-
   // Preselect today's date in YYYY-MM-DD format
   const today = new Date();
   const yyyy = today.getFullYear();
@@ -54,6 +46,16 @@ export default function MedcertPage() {
     remarks: "",
     dateDone: "",
   });
+
+    //for printing stuff
+  const ref = useRef(null);
+
+  const handlePrint = useReactToPrint({
+    // content: () => ref.current,
+    contentRef: ref,
+    documentTitle: "Medical Certificate - "+form.fullname, // 👈 custom filename
+  });
+
 
   // ================= FETCH SINGLE =================
   const { data, isLoading } = useQuery({
@@ -83,7 +85,7 @@ export default function MedcertPage() {
     if (data?.patient) {
       setForm({
         fullname: data.patient.fullname,
-        age: data.patient.age,
+        age: data.patient.age.toString(),
         address: data.patient.address,
         dateSigned: formattedDate,
         diagnosis: data.patient.diagnosis,
@@ -92,6 +94,7 @@ export default function MedcertPage() {
       });
     }
   }, [data]);
+
 
   // ================= MUTATION =================
   const createMutation = useMutation({
@@ -107,6 +110,7 @@ export default function MedcertPage() {
             dateSigned
             diagnosis
             remarks
+            dateDone
           }
         }
         `,
@@ -174,7 +178,7 @@ export default function MedcertPage() {
         day: "numeric",
       },
     );
-    //createMutation.mutate({ ...form, dateSigned: formattedDate });
+    createMutation.mutate({ ...form, dateSigned: formattedDate });
   };
 
   if (isLoading) return <div className="p-6">Loading...</div>;
@@ -283,7 +287,7 @@ export default function MedcertPage() {
               value={form.diagnosis}
               onChange={handleChange}
               required
-              className="form-diagnosis no-scrollbar overflow-auto resize-none w-full font-bold"
+              className="form-diagnosis no-scrollbar overflow-auto resize-none w-full font-bold underline"
             />
           </div>
 
@@ -309,7 +313,7 @@ export default function MedcertPage() {
             <p>Done at Poblacion, Manaoag, Pangasinan on</p>
             <input
               name="dateDone"
-              value={form.dateSigned}
+              value={form.dateDone}
               onChange={handleChange}
               required
               className="form-date-done ml-2 underline font-bold"

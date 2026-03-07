@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchPatients } from "@/app/lib/queries/patient";
+import {
+  fetchPatients,
+  fetchPatientInfoAndMedcertDateSigned,
+} from "@/app/lib/queries/patient";
 import { graphqlRequest } from "@/app/lib/graphql-client";
 import Link from "next/link";
 import { useDebounce } from "@/app/hooks/useDebounce";
@@ -21,7 +24,8 @@ export default function PatientsPage() {
   // ================= FETCH =================
   const { data, isLoading } = useQuery({
     queryKey: ["patients", page, debouncedSearch],
-    queryFn: () => fetchPatients(page, debouncedSearch),
+     queryFn: () => fetchPatients(page, debouncedSearch),
+    //queryFn: () => fetchPatientInfoAndMedcertDateSigned(page, debouncedSearch),
     // ⭐ CACHE SEARCH RESULTS SEPARATELY
     staleTime: 1000 * 60 * 2, // 2 minutes
   });
@@ -137,6 +141,7 @@ export default function PatientsPage() {
               <th className="p-4">Age</th>
               <th className="p-4">Address</th>
               <th className="p-4 w-32">Diagnosis</th>
+              <th className="p-4 w-32">Last Med Cert Issued</th>
               {/* <th className="p-4">Date Signed</th> */}
               <th className="p-4 w-32">Actions</th>
             </tr>
@@ -168,6 +173,9 @@ export default function PatientsPage() {
                 <td className="p-4">{patient.age}</td>
                 <td className="p-4">{patient.address}</td>
                 <td className="p-4 w-32">{patient.diagnosis}</td>
+                <td className="p-4 w-32">
+                  {patient.medcerts?.[0]?.dateSigned ?? "-"}
+                </td>
                 {/* <td className="p-4">{patient.dateSigned}</td> */}
                 {/* <td className="p-4">{formatDate(patient.dateSigned)}</td> */}
                 {/* <td className="p-4">
@@ -190,7 +198,7 @@ export default function PatientsPage() {
                     Edit
                   </button> */}
 
-                   <Link
+                  <Link
                     href={`/dashboard/medcert/${patient._id}`}
                     className="text-sm px-3 py-1 rounded bg-green-500 text-white"
                   >

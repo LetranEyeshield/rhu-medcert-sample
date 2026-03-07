@@ -22,3 +22,27 @@ export const fetchPatients = (page:number, search:string) =>
   `,
     { page, limit: 10, search }
   );
+
+export const fetchPatientInfoAndMedcertDateSigned = (page:number, search:string) =>
+graphqlRequest(
+`
+query PatientInfoAndMedcertDateSigned($page:Int!, $limit:Int!, $search:String){
+  patients(page:$page, limit:$limit, search:$search){
+    patients{
+      _id
+      fullname
+      age
+      address
+      diagnosis
+      remarks
+      medcert{
+        dateSigned
+      }
+    }
+    totalCount
+    totalPages
+  }
+}
+`,
+{ page, limit:10, search }
+);

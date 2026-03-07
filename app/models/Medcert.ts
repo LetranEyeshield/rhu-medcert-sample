@@ -9,10 +9,10 @@ const MedcertSchema = new Schema(
     dateSigned: { type: String, required: true },
     diagnosis: { type: String, required: true },
     remarks: { type: String, required: true },
+    dateDone: { type: String, required: true },
   },
   { timestamps: true },
 );
-
 
 const Medcert = models.Medcert || model("Medcert", MedcertSchema);
 export default Medcert;

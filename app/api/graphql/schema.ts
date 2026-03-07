@@ -1,6 +1,7 @@
 export const typeDefs = /* GraphQL */ `
   type Patient {
     _id: ID!
+    patientId: String!
     fullname: String!
     age: Int!
     address: String!
@@ -9,16 +10,19 @@ export const typeDefs = /* GraphQL */ `
     remarks: String!
     createdAt: String
     updatedAt: String
+    medcerts: [Medcert]
   }
 
-    type Medcert {
+  type Medcert {
     _id: ID!
+    patientId: String!
     fullname: String!
     age: String!
     address: String!
     dateSigned: String!
     diagnosis: String!
     remarks: String!
+    dateDone: String!
     createdAt: String
     updatedAt: String
   }
@@ -28,8 +32,14 @@ export const typeDefs = /* GraphQL */ `
     totalCount: Int!
     totalPages: Int!
   }
+  type MedcertPagination {
+    medcerts: [Medcert!]!
+    totalCount: Int!
+    totalPages: Int!
+  }
 
   input PatientInput {
+    patientId: String!
     fullname: String!
     age: Int!
     address: String!
@@ -38,18 +48,21 @@ export const typeDefs = /* GraphQL */ `
     remarks: String!
   }
 
-    input MedcertInput {
+  input MedcertInput {
     fullname: String!
     age: String!
     address: String!
     dateSigned: String!
     diagnosis: String!
     remarks: String!
+    dateDone: String!
   }
 
   type Query {
     patients(page: Int!, limit: Int!, search: String): PatientPagination!
     patient(id: ID!): Patient
+    medcerts(page: Int!, limit: Int!, search: String): MedcertPagination!
+    medcert(id: ID!): Medcert
   }
 
   type Mutation {

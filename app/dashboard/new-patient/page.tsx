@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { graphqlRequest } from "@/app/lib/graphql-client";
 import toast from "react-hot-toast";
 
 type Patient = {
+  patientId: string;
   fullname: string;
   age: number | string;
   address: string;
@@ -55,7 +56,26 @@ export default function NewPatient() {
   const dd = String(today.getDate()).padStart(2, "0");
   const todayString = `${yyyy}-${mm}-${dd}`;
 
+  const fetchTotalPatients = () =>
+    graphqlRequest(
+      `
+    query {
+      patients(page:1, limit:1){
+        totalCount
+      }
+    }
+    `,
+    );
+
+  const { data } = useQuery({
+    queryKey: ["totalPatients"],
+    queryFn: fetchTotalPatients,
+  });
+
+  const generatePatientId = todayString + data?.patients.totalCount + 1;
+
   const [form, setForm] = useState<Patient>({
+    patientId: todayString,
     fullname: "",
     age: "",
     address: "",
@@ -72,6 +92,7 @@ export default function NewPatient() {
       mutation CreatePatient($input:PatientInput!){
         createPatient(input:$input){
           _id
+          patientId
           fullname
           age
           address
@@ -155,11 +176,23 @@ export default function NewPatient() {
   return (
     <div className="p-6 max-w-xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Create Patient</h1>
-
       <form
         onSubmit={handleSubmit}
         className="bg-white border shadow rounded-xl p-6 space-y-4"
       >
+
+         {/* PATIENT ID */}
+        <div>
+          <label className="text-sm text-gray-600">Patient ID</label>
+          <input
+            name="fullname"
+            value={form.patientId}
+            onChange={handleChange}
+            required
+            className="w-full border rounded-lg px-4 py-2 mt-1"
+          />
+        </div>
+
         {/* FULLNAME */}
         <div>
           <label className="text-sm text-gray-600">Full name</label>

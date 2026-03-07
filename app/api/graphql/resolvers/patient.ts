@@ -105,5 +105,6 @@ export const patientResolvers = {
       throw new Error(error.message || "Server error while deleting patient");
     }
   },
+  
   },
 };
