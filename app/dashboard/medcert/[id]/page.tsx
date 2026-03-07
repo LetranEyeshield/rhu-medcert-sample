@@ -7,6 +7,7 @@ import { graphqlRequest } from "@/app/lib/graphql-client";
 import toast from "react-hot-toast";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
+import TextareaAutosize from "react-textarea-autosize";
 
 type Medcert = {
   patientId: string;
@@ -49,15 +50,14 @@ export default function MedcertPage() {
     dateDone: "",
   });
 
-    //for printing stuff
+  //for printing stuff
   const ref = useRef(null);
 
   const handlePrint = useReactToPrint({
     // content: () => ref.current,
     contentRef: ref,
-    documentTitle: "Medical Certificate - "+form.fullname, // 👈 custom filename
+    documentTitle: "Medical Certificate - " + form.fullname, // 👈 custom filename
   });
-
 
   // ================= FETCH SINGLE =================
   const { data, isLoading } = useQuery({
@@ -99,7 +99,6 @@ export default function MedcertPage() {
     }
   }, [data]);
 
-
   // ================= MUTATION =================
   const createMutation = useMutation({
     mutationFn: (input: Medcert) =>
@@ -124,13 +123,14 @@ export default function MedcertPage() {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["medcerts"] });
-      toast.success("New Medcert created Successfully", {
-        duration: 3000,
-        style: {
-          padding: "4px",
-          fontSize: "16px",
-        },
-      });
+      // toast.success("New Medcert created Successfully", {
+      //   duration: 3000,
+      //   style: {
+      //     padding: "4px",
+      //     fontSize: "16px",
+      //   },
+      // });
+      console.log("New Medcert Added");
       //router.push("/dashboard");
     },
 
@@ -196,13 +196,13 @@ export default function MedcertPage() {
 
       <form onSubmit={handleSubmit} className="">
         {/* display none to hide from the medical certificate */}
-         <input
-              name="patientId"
-              value={form.patientId}
-              onChange={handleChange}
-              required
-              className="form-patientId"
-            />
+        <input
+          name="patientId"
+          value={form.patientId}
+          onChange={handleChange}
+          required
+          className="form-patientId"
+        />
         <div ref={ref} className="certificate mx-auto">
           <div className="flex justify-center items-center w-full">
             <img src="/images/manaoag.png" className="w-21 h-21 mr-12" />
@@ -274,7 +274,7 @@ export default function MedcertPage() {
             </p>
           </div>
           <div className="undersigned-div mb-1 flex justify-start items-start w-full">
-            <p className="">the undersigned for the period of ____ </p>
+            <p className="ml-2">the undersigned for the period of ____ </p>
             {/* DATE SIGNED */}
             <input
               name="dateSigned"
@@ -295,12 +295,22 @@ export default function MedcertPage() {
 
           {/* DIAGNOSIS */}
           <div className="relative ml-2">
-            <textarea
+            {/* <textarea
               name="diagnosis"
               value={form.diagnosis}
               onChange={handleChange}
               required
               className="form-diagnosis no-scrollbar overflow-auto resize-none w-full font-bold underline"
+            /> */}
+            {/* TEXT AREA AUTO RESIZE */}
+            <TextareaAutosize
+              name="diagnosis"
+              value={form.diagnosis}
+              onChange={handleChange}
+              minRows={1}
+              // maxRows={10}
+              required
+              className="form-diagnosis no-scrollbar resize-none w-full font-bold underline"
             />
           </div>
 
@@ -366,7 +376,7 @@ export default function MedcertPage() {
             onClick={() => router.back()}
             className="px-4 py-2 rounded-lg border hover:bg-gray-100"
           >
-            Cancel
+            Back
           </button>
         </div>
       </form>

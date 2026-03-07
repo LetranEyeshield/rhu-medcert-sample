@@ -8,6 +8,7 @@ export const fetchPatients = (page:number, search:string) =>
       patients(page:$page, limit:$limit, search:$search){
         patients{
           _id
+          patientId
           fullname
           age
           address
