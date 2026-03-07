@@ -12,8 +12,6 @@ import { useDebounce } from "@/app/hooks/useDebounce";
 // import { formatDate } from "../utils/formatDate";
 import toast from "react-hot-toast";
 
-import {generatePatientId} from "@/app/lib/generatePatientId";
-
 export default function PatientsPage() {
   const queryClient = useQueryClient();
 
@@ -26,8 +24,8 @@ export default function PatientsPage() {
   // ================= FETCH =================
   const { data, isLoading } = useQuery({
     queryKey: ["patients", page, debouncedSearch],
-    // queryFn: () => fetchPatients(page, debouncedSearch),
-    queryFn: () => fetchPatientInfoAndMedcertDateSigned(page, debouncedSearch),
+    queryFn: () => fetchPatients(page, debouncedSearch),
+    //queryFn: () => fetchPatientInfoAndMedcertDateSigned(page, debouncedSearch),
     // ⭐ CACHE SEARCH RESULTS SEPARATELY
     staleTime: 1000 * 60 * 2, // 2 minutes
   });
@@ -144,7 +142,6 @@ export default function PatientsPage() {
               <th className="p-4">Age</th>
               <th className="p-4">Address</th>
               <th className="p-4 w-32">Diagnosis</th>
-              <th className="p-4 w-32">Last Med Cert Issued</th>
               {/* <th className="p-4">Date Signed</th> */}
               <th className="p-4 w-32">Actions</th>
             </tr>
@@ -177,9 +174,6 @@ export default function PatientsPage() {
                 <td className="p-4">{patient.age}</td>
                 <td className="p-4">{patient.address}</td>
                 <td className="p-4 w-32">{patient.diagnosis}</td>
-                <td className="p-4 w-32">
-                  {patient.medcerts?.[0]?.dateSigned ?? "Not yet Issued"}
-                </td>
                 {/* <td className="p-4">{patient.dateSigned}</td> */}
                 {/* <td className="p-4">{formatDate(patient.dateSigned)}</td> */}
                 {/* <td className="p-4">

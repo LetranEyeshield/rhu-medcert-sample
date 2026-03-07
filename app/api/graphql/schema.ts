@@ -39,7 +39,6 @@ export const typeDefs = /* GraphQL */ `
   }
 
   input PatientInput {
-    patientId: String!
     fullname: String!
     age: Int!
     address: String!
