@@ -5,8 +5,10 @@ import { useParams, useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { graphqlRequest } from "@/app/lib/graphql-client";
 import toast from "react-hot-toast";
+import {generatePatientId} from "@/app/lib/generatePatientId";
 
 type Patient = {
+  patientId: string;
   fullname: string;
   age: number | string;
   address: string;
@@ -50,6 +52,7 @@ export default function EditPatientPage() {
   const queryClient = useQueryClient();
 
   const [form, setForm] = useState<Patient>({
+    patientId:"",
     fullname: "",
     age: "",
     address: "",
@@ -67,6 +70,7 @@ export default function EditPatientPage() {
         query Patient($id:ID!){
           patient(id:$id){
             _id
+            patientId
           fullname
           age
           address
@@ -85,6 +89,7 @@ export default function EditPatientPage() {
   useEffect(() => {
     if (data?.patient) {
       setForm({
+        patientId: data.patient.patientId,
         fullname: data.patient.fullname,
         age: data.patient.age,
         address: data.patient.address,
@@ -195,6 +200,18 @@ export default function EditPatientPage() {
         onSubmit={handleSubmit}
         className="bg-white border shadow rounded-xl p-6 space-y-4"
       >
+
+          {/* PATIENT ID */}
+        <div>
+          <label className="text-sm text-gray-600">Patient ID No:</label>
+          <input
+            name="patientId"
+            value={form.patientId}
+            onChange={handleChange}
+            required
+            className="w-full border rounded-lg px-4 py-2 mt-1"
+          />
+        </div>
         {/* FULLNAME */}
         <div>
           <label className="text-sm text-gray-600">Full name</label>

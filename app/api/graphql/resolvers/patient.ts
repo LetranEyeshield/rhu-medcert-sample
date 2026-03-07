@@ -1,6 +1,7 @@
 import { connectDB } from "@/app/lib/mongodb";
 import Patient from "@/app/models/Patient";
 import Medcert from "@/app/models/Medcert";
+// import {generatePatientId} from "@/app/lib/generatePatientId";
 
 export const patientResolvers = {
   Query: {
@@ -47,7 +48,30 @@ export const patientResolvers = {
   },
 
   Mutation: {
-    createPatient: async (_: any, { input }: any) => {
+    // createPatient: async (_: any, { input }: any) => {
+    //   try {
+    //     await connectDB();
+
+    //     // const newPatient = await Patient.create(input);
+    //     const patientId = await generatePatientId();
+
+    //     const newPatient = await Patient.create({
+    //       ...input,
+    //       patientId,
+    //     });
+
+    //     if (!newPatient) {
+    //       throw new Error("Adding new patient failed");
+    //     }
+
+    //     return newPatient;
+    //   } catch (error: any) {
+    //     console.error("CREATE PATIENT ERROR:", error);
+    //     throw new Error(error.message || "Server error while adding patient");
+    //   }
+    // },
+
+        createPatient: async (_: any, { input }: any) => {
       try {
         await connectDB();
 

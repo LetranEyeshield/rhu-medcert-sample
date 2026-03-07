@@ -12,6 +12,8 @@ import { useDebounce } from "@/app/hooks/useDebounce";
 // import { formatDate } from "../utils/formatDate";
 import toast from "react-hot-toast";
 
+import {generatePatientId} from "@/app/lib/generatePatientId";
+
 export default function PatientsPage() {
   const queryClient = useQueryClient();
 
@@ -137,6 +139,7 @@ export default function PatientsPage() {
         <table className="w-full">
           <thead className="bg-gray-50 text-left text-sm text-gray-600">
             <tr>
+               <th className="p-4">Patient ID No:</th>
               <th className="p-4">Name</th>
               <th className="p-4">Age</th>
               <th className="p-4">Address</th>
@@ -169,12 +172,13 @@ export default function PatientsPage() {
                 key={patient._id}
                 className="border-t hover:bg-gray-50 transition"
               >
+                <td className="p-4 font-medium">{patient.patientId}</td>
                 <td className="p-4 font-medium">{patient.fullname}</td>
                 <td className="p-4">{patient.age}</td>
                 <td className="p-4">{patient.address}</td>
                 <td className="p-4 w-32">{patient.diagnosis}</td>
                 <td className="p-4 w-32">
-                  {patient.medcerts?.[0]?.dateSigned ?? "-"}
+                  {patient.medcerts?.[0]?.dateSigned ?? "Not yet Issued"}
                 </td>
                 {/* <td className="p-4">{patient.dateSigned}</td> */}
                 {/* <td className="p-4">{formatDate(patient.dateSigned)}</td> */}

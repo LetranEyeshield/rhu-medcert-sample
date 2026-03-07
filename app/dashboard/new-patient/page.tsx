@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { graphqlRequest } from "@/app/lib/graphql-client";
 import toast from "react-hot-toast";
 
+
 type Patient = {
-  patientId: string;
   fullname: string;
   age: number | string;
   address: string;
@@ -73,13 +73,8 @@ export default function NewPatient() {
   });
 
 
-  const totalCountPlusOne = data?.patients.totalCount + 1;
-  const generatePatientId = todayString + "-00"+ totalCountPlusOne;
-
-
 
   const [form, setForm] = useState<Patient>({
-    patientId: generatePatientId,
     fullname: "",
     age: "",
     address: "",
@@ -186,7 +181,7 @@ export default function NewPatient() {
       >
 
          {/* PATIENT ID */}
-        <div>
+        {/* <div>
           <label className="text-sm text-gray-600">Patient ID</label>
           <input
             name="patientId"
@@ -195,7 +190,7 @@ export default function NewPatient() {
             required
             className="w-full border rounded-lg px-4 py-2 mt-1"
           />
-        </div>
+        </div> */}
 
         {/* FULLNAME */}
         <div>

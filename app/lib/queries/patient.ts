@@ -30,6 +30,7 @@ query PatientInfoAndMedcertDateSigned($page:Int!, $limit:Int!, $search:String){
   patients(page:$page, limit:$limit, search:$search){
     patients{
       _id
+      patientId
       fullname
       age
       address
