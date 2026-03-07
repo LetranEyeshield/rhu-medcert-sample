@@ -3,6 +3,7 @@ import mongoose, { Schema, model, models } from "mongoose";
 
 const MedcertSchema = new Schema(
   {
+    patientId: { type: String, required: true },
     fullname: { type: String, required: true },
     age: { type: String, required: true },
     address: { type: String, required: true },

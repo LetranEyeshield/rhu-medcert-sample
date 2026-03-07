@@ -9,6 +9,7 @@ import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 
 type Medcert = {
+  patientId: string;
   fullname: string;
   age: string;
   address: string;
@@ -38,6 +39,7 @@ export default function MedcertPage() {
   });
 
   const [form, setForm] = useState<Medcert>({
+    patientId: "",
     fullname: "",
     age: "",
     address: "",
@@ -66,6 +68,7 @@ export default function MedcertPage() {
         query Patient($id:ID!){
           patient(id:$id){
             _id
+            patientId
           fullname
           age
           address
@@ -84,6 +87,7 @@ export default function MedcertPage() {
   useEffect(() => {
     if (data?.patient) {
       setForm({
+        patientId: data.patient.patientId,
         fullname: data.patient.fullname,
         age: data.patient.age.toString(),
         address: data.patient.address,
@@ -104,6 +108,7 @@ export default function MedcertPage() {
         mutation CreateMedcert($input:MedcertInput!){
           createMedcert(input:$input){
             _id
+            patientId
             fullname
             age
             address
@@ -190,6 +195,14 @@ export default function MedcertPage() {
       </h1>
 
       <form onSubmit={handleSubmit} className="">
+        {/* display none to hide from the medical certificate */}
+         <input
+              name="patientId"
+              value={form.patientId}
+              onChange={handleChange}
+              required
+              className="form-patientId"
+            />
         <div ref={ref} className="certificate mx-auto">
           <div className="flex justify-center items-center w-full">
             <img src="/images/manaoag.png" className="w-21 h-21 mr-12" />

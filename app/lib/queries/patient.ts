@@ -35,7 +35,7 @@ query PatientInfoAndMedcertDateSigned($page:Int!, $limit:Int!, $search:String){
       address
       diagnosis
       remarks
-      medcert{
+      medcerts{
         dateSigned
       }
     }

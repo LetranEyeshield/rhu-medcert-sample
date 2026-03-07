@@ -1,6 +1,6 @@
 import { connectDB } from "@/app/lib/mongodb";
 import Patient from "@/app/models/Patient";
-// import { NextResponse } from "next/server";
+import Medcert from "@/app/models/Medcert";
 
 export const patientResolvers = {
   Query: {
@@ -9,7 +9,6 @@ export const patientResolvers = {
 
       const skip = (page - 1) * limit;
 
-      //best of both worlds: use text index for longer searches and regex for short ones to avoid irrelevant results
       const filter = search
         ? search.length < 3
           ? { fullname: { $regex: search, $options: "i" } }
@@ -36,11 +35,18 @@ export const patientResolvers = {
     },
   },
 
+  // ✅ NESTED RESOLVER
+  Patient: {
+    medcerts: async (parent: any) => {
+      await connectDB();
+
+      return await Medcert.find({ patientId: parent.patientId })
+        .sort({ createdAt: -1 })
+        .limit(1);
+    },
+  },
+
   Mutation: {
-    //  createPatient: async (_: any, { input }: any) => {
-    //     await connectDB();
-    //     return Patient.create(input);
-    // },
     createPatient: async (_: any, { input }: any) => {
       try {
         await connectDB();
@@ -58,53 +64,40 @@ export const patientResolvers = {
       }
     },
 
-    // updatePatient: async (_: any, { id, input }: any) => {
-    //   await connectDB();
-    //   return Patient.findByIdAndUpdate(id, input, { new: true });
-    // },
-
     updatePatient: async (_: any, { id, input }: any) => {
-    try {
-      await connectDB();
+      try {
+        await connectDB();
 
-      const updatedPatient = await Patient.findByIdAndUpdate(
-        id,
-        input,
-        { new: true }
-      );
+        const updatedPatient = await Patient.findByIdAndUpdate(id, input, {
+          new: true,
+        });
 
-      if (!updatedPatient) {
-        throw new Error("Patient not found");
+        if (!updatedPatient) {
+          throw new Error("Patient not found");
+        }
+
+        return updatedPatient;
+      } catch (error: any) {
+        console.error("UPDATE PATIENT ERROR:", error);
+        throw new Error(error.message || "Server error while updating patient");
       }
+    },
 
-      return updatedPatient;
-    } catch (error: any) {
-      console.error("UPDATE PATIENT ERROR:", error);
-      throw new Error(error.message || "Server error while updating patient");
-    }
-  },
+    deletePatient: async (_: any, { id }: any) => {
+      try {
+        await connectDB();
 
-    // deletePatient: async (_: any, { id }: any) => {
-    //   await connectDB();
-    //   await Patient.findByIdAndDelete(id);
-    //   return true;
-    // },
-     deletePatient: async (_: any, { id }: any) => {
-    try {
-      await connectDB();
+        const deleted = await Patient.findByIdAndDelete(id);
 
-      const deleted = await Patient.findByIdAndDelete(id);
+        if (!deleted) {
+          throw new Error("Patient not found");
+        }
 
-      if (!deleted) {
-        throw new Error("Patient not found");
+        return true;
+      } catch (error: any) {
+        console.error("DELETE PATIENT ERROR:", error);
+        throw new Error(error.message || "Server error while deleting patient");
       }
-
-      return true;
-    } catch (error: any) {
-      console.error("DELETE PATIENT ERROR:", error);
-      throw new Error(error.message || "Server error while deleting patient");
-    }
-  },
-  
+    },
   },
 };

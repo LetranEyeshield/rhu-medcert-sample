@@ -49,6 +49,7 @@ export const typeDefs = /* GraphQL */ `
   }
 
   input MedcertInput {
+   patientId: String!
     fullname: String!
     age: String!
     address: String!

@@ -18,6 +18,10 @@ body {
   margin-right: auto;
 }
 
+.form-patientId{
+  display: none !important;
+}
+
 /* A4 SIZE */
 /* .certificate {
   width: 794px;       

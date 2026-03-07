@@ -72,10 +72,14 @@ export default function NewPatient() {
     queryFn: fetchTotalPatients,
   });
 
-  const generatePatientId = todayString + data?.patients.totalCount + 1;
+
+  const totalCountPlusOne = data?.patients.totalCount + 1;
+  const generatePatientId = todayString + "-00"+ totalCountPlusOne;
+
+
 
   const [form, setForm] = useState<Patient>({
-    patientId: todayString,
+    patientId: generatePatientId,
     fullname: "",
     age: "",
     address: "",
@@ -185,7 +189,7 @@ export default function NewPatient() {
         <div>
           <label className="text-sm text-gray-600">Patient ID</label>
           <input
-            name="fullname"
+            name="patientId"
             value={form.patientId}
             onChange={handleChange}
             required

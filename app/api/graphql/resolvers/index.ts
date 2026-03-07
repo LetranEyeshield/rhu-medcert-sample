@@ -10,4 +10,7 @@ export const resolvers = {
     ...patientResolvers.Mutation,
     ...medcertResolvers.Mutation,
   },
+   Patient: {
+    ...patientResolvers.Patient,
+  },
 };

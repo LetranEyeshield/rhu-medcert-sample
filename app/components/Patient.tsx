@@ -24,8 +24,8 @@ export default function PatientsPage() {
   // ================= FETCH =================
   const { data, isLoading } = useQuery({
     queryKey: ["patients", page, debouncedSearch],
-     queryFn: () => fetchPatients(page, debouncedSearch),
-    //queryFn: () => fetchPatientInfoAndMedcertDateSigned(page, debouncedSearch),
+    // queryFn: () => fetchPatients(page, debouncedSearch),
+    queryFn: () => fetchPatientInfoAndMedcertDateSigned(page, debouncedSearch),
     // ⭐ CACHE SEARCH RESULTS SEPARATELY
     staleTime: 1000 * 60 * 2, // 2 minutes
   });
