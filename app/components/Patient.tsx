@@ -110,7 +110,7 @@ export default function PatientsPage() {
   });
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
+    <div className="p-6 max-w-6xl mx-auto wrapper">
       {/* HEADER */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <h1 className="text-2xl font-bold">Patients</h1>
@@ -132,95 +132,75 @@ export default function PatientsPage() {
         </Link>
       </div>
 
-      {/* TABLE */}
-      <div className="bg-white rounded-xl shadow border overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50 text-left text-sm text-gray-600">
-            <tr>
-               <th className="p-4">Patient ID No:</th>
-              <th className="p-4">Name</th>
-              <th className="p-4">Age</th>
-              <th className="p-4">Address</th>
-              <th className="p-4 w-32">Diagnosis</th>
-              {/* <th className="p-4">Date Signed</th> */}
-              <th className="p-4 w-32">Actions</th>
-            </tr>
-          </thead>
+      {/* CARD */}
+      {/* <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"> */}
+      <div className="grid grid-cols-1 gap-6">
+        {isLoading && <p>Loading...</p>}
 
-          <tbody>
-            {isLoading && (
-              <tr>
-                <td className="p-6 text-center" colSpan={4}>
-                  Loading...
-                </td>
-              </tr>
-            )}
+        {!isLoading && patients.length === 0 && (
+          <p className="text-gray-500">No patients found</p>
+        )}
 
-            {!isLoading && patients.length === 0 && (
-              <tr>
-                <td className="p-6 text-center" colSpan={4}>
-                  No patients found
-                </td>
-              </tr>
-            )}
+        {patients.map((patient: any) => (
+          <div
+            key={patient._id}
+            className="bg-white rounded-2xl shadow-lg border border-blue-100 p-6 hover:shadow-xl transition"
+          >
+            {/* PATIENT ID */}
+            <div className="flex justify-between items-start mb-3">
+              <p>
+                <span className="text-xs bg-cyan-100 text-cyan-700 px-2 py-1 rounded">
+                  Patient ID No: {patient.patientId}
+                </span>
+              </p>
+            </div>
 
-            {patients.map((patient: any) => (
-              <tr
-                key={patient._id}
-                className="border-t hover:bg-gray-50 transition"
+            {/* NAME */}
+            <h2 className="text-lg font-bold text-blue-900">
+              {patient.fullname}
+            </h2>
+
+            {/* INFO */}
+            <div className="text-sm text-gray-600 mt-2 space-y-1">
+              <p>
+                <span className="font-semibold">Age:</span> {patient.age}
+              </p>
+              <p>
+                <span className="font-semibold">Address:</span>{" "}
+                {patient.address}
+              </p>
+            </div>
+
+            {/* DIAGNOSIS */}
+            <p className="mt-3 text-sm text-gray-700 line-clamp-2">
+               <span className="font-semibold">Diagnosis:</span> {patient.diagnosis}
+            </p>
+
+            {/* ACTIONS */}
+            <div className="mt-5 flex gap-2">
+              <Link
+                href={`/dashboard/medcert/${patient._id}`}
+                className="text-sm px-3 py-2 rounded-lg bg-cyan-500 text-white hover:bg-cyan-600"
               >
-                <td className="p-4 font-medium">{patient.patientId}</td>
-                <td className="p-4 font-medium">{patient.fullname}</td>
-                <td className="p-4">{patient.age}</td>
-                <td className="p-4">{patient.address}</td>
-                <td className="p-4 w-32">{patient.diagnosis}</td>
-                {/* <td className="p-4">{patient.dateSigned}</td> */}
-                {/* <td className="p-4">{formatDate(patient.dateSigned)}</td> */}
-                {/* <td className="p-4">
-  {
-  patient.dateSigned
-    ? new Date(patient.dateSigned).toLocaleDateString("en-US", {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-      })
-    : "-"}
-</td> */}
-                <td className="p-4 flex gap-2">
-                  {/* <button
-                    className="text-sm px-3 py-1 rounded bg-blue-500 text-white hover:bg-blue-600"
-                    onClick={() =>
-                      alert("Navigate to edit page later")
-                    }
-                  >
-                    Edit
-                  </button> */}
+                Med Cert
+              </Link>
 
-                  <Link
-                    href={`/dashboard/medcert/${patient._id}`}
-                    className="text-sm px-3 py-1 rounded bg-green-500 text-white"
-                  >
-                    Issue Med Cert
-                  </Link>
+              <Link
+                href={`/dashboard/patients/${patient._id}`}
+                className="text-sm px-3 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+              >
+                Edit
+              </Link>
 
-                  <Link
-                    href={`/dashboard/patients/${patient._id}`}
-                    className="text-sm px-3 py-1 rounded bg-blue-500 text-white"
-                  >
-                    Edit
-                  </Link>
-
-                  <button
-                    className="text-sm px-3 py-1 rounded bg-red-500 text-white cursor-pointer"
-                    onClick={() => handleDelete(patient)}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+              <button
+                onClick={() => handleDelete(patient)}
+                className="text-sm px-3 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* PAGINATION */}

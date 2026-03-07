@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import TextareaAutosize from "react-textarea-autosize";
+import Header from "@/app/components/Header";
 
 type Medcert = {
   patientId: string;
@@ -190,6 +191,7 @@ export default function MedcertPage() {
 
   return (
     <div className="wrapper">
+      <Header />
       <h1 className="text-5xl font-bold mb-6 text-center">
         Issue Medical Certificate
       </h1>

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { graphqlRequest } from "@/app/lib/graphql-client";
 import toast from "react-hot-toast";
-
+import Header from "@/app/components/Header";
 
 type Patient = {
   fullname: string;
@@ -71,8 +71,6 @@ export default function NewPatient() {
     queryKey: ["totalPatients"],
     queryFn: fetchTotalPatients,
   });
-
-
 
   const [form, setForm] = useState<Patient>({
     fullname: "",
@@ -173,125 +171,148 @@ export default function NewPatient() {
   };
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Create Patient</h1>
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white border shadow rounded-xl p-6 space-y-4"
-      >
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-4xl mx-auto">
+        <Header />
 
-         {/* PATIENT ID */}
-        {/* <div>
-          <label className="text-sm text-gray-600">Patient ID</label>
-          <input
-            name="patientId"
-            value={form.patientId}
-            onChange={handleChange}
-            required
-            className="w-full border rounded-lg px-4 py-2 mt-1"
-          />
-        </div> */}
-
-        {/* FULLNAME */}
-        <div>
-          <label className="text-sm text-gray-600">Full name</label>
-          <input
-            name="fullname"
-            value={form.fullname}
-            onChange={handleChange}
-            required
-            className="w-full border rounded-lg px-4 py-2 mt-1"
-          />
+        {/* TITLE */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-blue-900">Create Patient</h1>
+          <p className="text-sm text-gray-500">
+            Register a new patient in the system
+          </p>
         </div>
 
-        {/* AGE */}
-        <div>
-          <label className="text-sm text-gray-600">Age</label>
-          <input
-            name="age"
-            type="number"
-            value={form.age}
-            onChange={handleChange}
-            required
-            className="w-full border rounded-lg px-4 py-2 mt-1"
-          />
-        </div>
+        {/* FORM CARD */}
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white shadow-lg border border-gray-100 rounded-2xl p-8 space-y-6"
+        >
+          {/* PATIENT ID INFO */}
+          <div className="bg-cyan-50 border border-cyan-100 rounded-lg p-4">
+            <p className="text-sm text-gray-600">Patient ID</p>
+            <p className="text-cyan-700 font-semibold">
+              Auto-generated after creation
+            </p>
+          </div>
 
-        {/* ADDRESS */}
-        <div>
-          <label className="text-sm text-gray-600">Address</label>
-          <select
-            name="address"
-            value={form.address}
-            onChange={handleChange}
-            required
-            className="w-full border rounded-lg px-4 py-2 mt-1"
-          >
-            <option value="">Select Address</option>
-            {addressList.map((address) => (
-              <option key={address} value={address}>
-                {address}
-              </option>
-            ))}
-          </select>
-        </div>
+          {/* GRID FORM */}
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* FULLNAME */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Full Name
+              </label>
+              <input
+                name="fullname"
+                value={form.fullname}
+                onChange={handleChange}
+                required
+                className="mt-1 w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-cyan-400 focus:outline-none"
+              />
+            </div>
 
-        {/* DATE SIGNED */}
-        <div>
-          <label className="text-sm text-gray-600">Date Signed</label>
-          <input
-            name="dateSigned"
-            type="date"
-            value={form.dateSigned}
-            onChange={handleChange}
-            required
-            className="w-full border rounded-lg px-4 py-2 mt-1"
-          />
-        </div>
+            {/* AGE */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Age
+              </label>
+              <input
+                name="age"
+                type="number"
+                value={form.age}
+                onChange={handleChange}
+                required
+                className="mt-1 w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-cyan-400 focus:outline-none"
+              />
+            </div>
 
-        {/* DIAGNOSIS */}
-        <div>
-          <label className="text-sm text-gray-600">Diagnosis</label>
-          <textarea
-            name="diagnosis"
-            value={form.diagnosis}
-            onChange={handleChange}
-            required
-            className="w-full border rounded-lg px-4 py-2 mt-1"
-          />
-        </div>
+            {/* ADDRESS */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Address
+              </label>
+              <select
+                name="address"
+                value={form.address}
+                onChange={handleChange}
+                required
+                className="mt-1 w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-cyan-400 focus:outline-none"
+              >
+                <option value="">Select Address</option>
+                {addressList.map((address) => (
+                  <option key={address} value={address}>
+                    {address}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        {/* REMARKS */}
-        <div>
-          <label className="text-sm text-gray-600">Remarks</label>
-          <input
-            name="remarks"
-            value={form.remarks}
-            onChange={handleChange}
-            required
-            className="w-full border rounded-lg px-4 py-2 mt-1"
-          />
-        </div>
+            {/* DATE */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Registration Date
+              </label>
+              <input
+                name="dateSigned"
+                type="date"
+                value={form.dateSigned}
+                onChange={handleChange}
+                required
+                className="mt-1 w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-cyan-400 focus:outline-none"
+              />
+            </div>
+          </div>
 
-        {/* ACTIONS */}
-        <div className="flex gap-3 pt-2">
-          <button
-            type="submit"
-            disabled={createMutation.isPending}
-            className="px-4 py-2 rounded-lg bg-black text-white hover:opacity-90 disabled:opacity-50"
-          >
-            {createMutation.isPending ? "Saving..." : "Create"}
-          </button>
+          {/* DIAGNOSIS */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Diagnosis
+            </label>
+            <textarea
+              name="diagnosis"
+              value={form.diagnosis}
+              onChange={handleChange}
+              rows={3}
+              required
+              className="mt-1 w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-cyan-400 focus:outline-none"
+            />
+          </div>
 
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="px-4 py-2 rounded-lg border"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
+          {/* REMARKS */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Remarks
+            </label>
+            <textarea
+              name="remarks"
+              value={form.remarks}
+              onChange={handleChange}
+              rows={2}
+              className="mt-1 w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-cyan-400 focus:outline-none"
+            />
+          </div>
+
+          {/* ACTION BUTTONS */}
+          <div className="flex justify-end gap-3 pt-4">
+            <button
+              type="button"
+              onClick={() => router.back()}
+              className="px-4 py-2 border rounded-lg hover:bg-gray-100"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              disabled={createMutation.isPending}
+              className="px-5 py-2 rounded-lg bg-cyan-600 text-white hover:bg-cyan-700 disabled:opacity-50"
+            >
+              {createMutation.isPending ? "Saving..." : "Create Patient"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
