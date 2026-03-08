@@ -10,7 +10,7 @@ export default function Header() {
         alt="Manaoag Logo"
       />
 
-      <h1 className="text-xl sm:text-3xl md:text-4xl font-bold text-blue-800 text-center">
+      <h1 className="text-xl sm:text-3xl md:text-4xl font-bold text-white text-center">
         MED CERT SYSTEM V.1.0
       </h1>
 
