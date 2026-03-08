@@ -1,7 +1,8 @@
 import { connectDB } from "@/app/lib/mongodb";
 import Patient from "@/app/models/Patient";
 import Medcert from "@/app/models/Medcert";
-import {generatePatientId} from "@/app/lib/generatePatientId";
+import { generatePatientId } from "@/app/lib/generatePatientId";
+import Fittowork from "@/app/models/FitToWork";
 
 export const patientResolvers = {
   Query: {
@@ -41,9 +42,18 @@ export const patientResolvers = {
     medcerts: async (parent: any) => {
       await connectDB();
 
-      return await Medcert.find({ patientId: parent.patientId })
-        .sort({ createdAt: -1 })
-        .limit(1);
+      return await Medcert.find({ patientId: parent.patientId }).sort({
+        createdAt: -1,
+      });
+      // .limit(1);
+    },
+    fittoworks: async (parent: any) => {
+      await connectDB();
+
+      return await Fittowork.find({ patientId: parent.patientId }).sort({
+        createdAt: -1,
+      });
+      // .limit(1);
     },
   },
 

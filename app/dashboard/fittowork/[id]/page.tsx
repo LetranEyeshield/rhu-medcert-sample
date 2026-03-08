@@ -7,16 +7,14 @@ import { graphqlRequest } from "@/app/lib/graphql-client";
 import toast from "react-hot-toast";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
-import TextareaAutosize from "react-textarea-autosize";
 import Header from "@/app/components/Header";
 
-type Medcert = {
+type Fittowork = {
   patientId: string;
   fullname: string;
   age: string;
   address: string;
   dateSigned: string;
-  diagnosis: string;
   remarks: string;
   dateDone: string;
 };
@@ -40,13 +38,12 @@ export default function MedcertPage() {
     day: "numeric",
   });
 
-  const [form, setForm] = useState<Medcert>({
+  const [form, setForm] = useState<Fittowork>({
     patientId: "",
     fullname: "",
     age: "",
     address: "",
     dateSigned: "",
-    diagnosis: "",
     remarks: "",
     dateDone: "",
   });
@@ -57,7 +54,7 @@ export default function MedcertPage() {
   const handlePrint = useReactToPrint({
     // content: () => ref.current,
     contentRef: ref,
-    documentTitle: "Medical Certificate - " + form.fullname, // 👈 custom filename
+    documentTitle: "Fit To Work - " + form.fullname, // 👈 custom filename
   });
 
   // ================= FETCH SINGLE =================
@@ -99,10 +96,9 @@ export default function MedcertPage() {
           age
           address
           dateSigned
-          diagnosis
           remarks
 
-          medcerts {
+          fittoworks {
             _id
             dateDone
           }
@@ -123,8 +119,7 @@ export default function MedcertPage() {
         age: data.patient.age.toString(),
         address: data.patient.address,
         dateSigned: formattedDate,
-        diagnosis: data.patient.diagnosis,
-        remarks: data.patient.remarks,
+        remarks: "",
         dateDone: formattedDate,
       });
     }
@@ -132,18 +127,17 @@ export default function MedcertPage() {
 
   // ================= MUTATION =================
   const createMutation = useMutation({
-    mutationFn: (input: Medcert) =>
+    mutationFn: (input: Fittowork) =>
       graphqlRequest(
         `
-        mutation CreateMedcert($input:MedcertInput!){
-          createMedcert(input:$input){
+        mutation CreateMedcert($input:FittoworkInput!){
+          createFittowork(input:$input){
             _id
             patientId
             fullname
             age
             address
             dateSigned
-            diagnosis
             remarks
             dateDone
           }
@@ -154,7 +148,7 @@ export default function MedcertPage() {
 
     onSuccess: () => {
       (queryClient.invalidateQueries({ queryKey: ["patient", id] }),
-        queryClient.invalidateQueries({ queryKey: ["medcerts"] }),
+        queryClient.invalidateQueries({ queryKey: ["fittoworks"] }),
         // toast.success("New Medcert created Successfully", {
         //   duration: 3000,
         //   style: {
@@ -162,7 +156,7 @@ export default function MedcertPage() {
         //     fontSize: "16px",
         //   },
         // });
-        console.log("New Medcert Added"));
+        console.log("New Fit To Work Added"));
       //router.push("/dashboard");
     },
 
@@ -174,7 +168,7 @@ export default function MedcertPage() {
       const message =
         error?.response?.errors?.[0]?.message ||
         error.message ||
-        "Error creating medcert";
+        "Error creating fit to work certificate";
       toast.error(message, {
         duration: 3000,
         style: {
@@ -233,15 +227,15 @@ export default function MedcertPage() {
         <div className="col-span-4">
           <div className="bg-white shadow-md rounded-xl p-6 sticky top-6">
             <h2 className="text-lg font-bold mb-4">
-              Medical Certificate History
+              Fit To Work Certificate History
             </h2>
 
-            {data?.patient?.medcerts?.length === 0 && (
+            {data?.patient?.fittoworks?.length === 0 && (
               <p className="text-gray-500">No history yet</p>
             )}
 
             <ul className="space-y-2 max-h-[500px] overflow-auto pr-2">
-              {data?.patient?.medcerts?.map((cert: any) => (
+              {data?.patient?.fittoworks?.map((cert: any) => (
                 <li
                   key={cert._id}
                   className="flex justify-between items-center border rounded-lg px-4 py-2 hover:bg-gray-50"
@@ -287,7 +281,7 @@ export default function MedcertPage() {
               {/* FULLNAME */}
               <p className="ml-13 mt-10 mb-3">
                 This is to certify that{" "}
-                <span className="font-bold">MR./MRS/MS.______</span>
+                <span className="font-bold">&nbsp; MR./MRS/MS.______</span>
                 <input
                   name="fullname"
                   value={form.fullname}
@@ -307,8 +301,8 @@ export default function MedcertPage() {
                   required
                   className="age-input underline font-bold"
                 />
-                years old, male/female, married/single, widow/widower, Filipino
-                and a resident of
+                years &nbsp; old, &nbsp; male/female, &nbsp; married/single, &nbsp; widow/widower, &nbsp;  Filipino
+                and &nbsp; a &nbsp; resident &nbsp; of
               </p>
 
               {/* ADDRESS */}
@@ -340,7 +334,7 @@ export default function MedcertPage() {
                 </p>
               </div>
               <div className="undersigned-div mb-1 flex justify-start items-start w-full">
-                <p className="ml-2">the undersigned for the period of ____ </p>
+                <p className="ml-2">the undersigned for the period of ____  &nbsp;</p>
                 {/* DATE SIGNED */}
                 <input
                   name="dateSigned"
@@ -355,30 +349,11 @@ export default function MedcertPage() {
                 />
                 <span className="date-signed-span">
                   {" "}
-                  _____ and was diagnosed to have suffered from
+                  _____ was &nbsp; assessed &nbsp; diagnosed &nbsp; to &nbsp; be   
                 </span>
               </div>
 
-              {/* DIAGNOSIS */}
-              <div className="relative ml-2">
-                {/* <textarea
-              name="diagnosis"
-              value={form.diagnosis}
-              onChange={handleChange}
-              required
-              className="form-diagnosis no-scrollbar overflow-auto resize-none w-full font-bold underline"
-            /> */}
-                {/* TEXT AREA AUTO RESIZE */}
-                <TextareaAutosize
-                  name="diagnosis"
-                  value={form.diagnosis}
-                  onChange={handleChange}
-                  minRows={1}
-                  // maxRows={10}
-                  required
-                  className="form-diagnosis no-scrollbar resize-none w-full font-bold underline"
-                />
-              </div>
+              <p className="font-bold ml-2 mt-4">PHYSICALLY AND MENTALLY FIT.</p>
 
               <p className="mt-10 ml-13">
                 This certification is being issued to{" "}
@@ -395,6 +370,7 @@ export default function MedcertPage() {
                   value={form.remarks}
                   onChange={handleChange}
                   required
+                  placeholder="Enter Remarks Here"
                   className="w-11/12 ml-3 underline"
                 />
               </div>
@@ -408,8 +384,7 @@ export default function MedcertPage() {
                   className="form-date-done ml-2 underline font-bold"
                 />
               </div>
-              <div className="signature-div flex justify-between">
-                <p className="ml-10 mt-25">ILLNESS CERTIFICATE</p>
+              <div className="signature-div flex justify-end items-end">
                 <div className="doc-div mt-20 mr-8 text-center">
                   <span className="font-bold">_________________________</span>
                   <p className="font-bold">Dr. Encarnacion E. Cordova</p>

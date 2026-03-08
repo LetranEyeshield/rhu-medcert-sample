@@ -184,6 +184,12 @@ export default function PatientsPage() {
               >
                 Med Cert
               </Link>
+               <Link
+                href={`/dashboard/fittowork/${patient._id}`}
+                className="text-sm px-3 py-2 rounded-lg bg-cyan-500 text-white hover:bg-cyan-600"
+              >
+                Fit to Work
+              </Link>
 
               <Link
                 href={`/dashboard/patients/${patient._id}`}
