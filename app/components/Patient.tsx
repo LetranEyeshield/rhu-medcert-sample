@@ -116,7 +116,7 @@ export default function PatientsPage() {
         <h1 className="text-2xl font-bold">Patients</h1>
 
         <input
-          placeholder="Search patient..."
+          placeholder="Search Patient..."
           className="border rounded-lg px-4 py-2 w-full md:w-64"
           value={search}
           onChange={(e) => {
